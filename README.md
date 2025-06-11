@@ -1,1 +1,1 @@
-# ContentSense - Easy to use content moderation/checker for Chrome
+# ContentSense - Easy-to-use content checker for Chrome
