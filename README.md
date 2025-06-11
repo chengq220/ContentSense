@@ -1,1 +1,1 @@
-# ContentSense - Easy-to-use content checker for Chrome
+# ContentSense - Webpage content checker for Chrome

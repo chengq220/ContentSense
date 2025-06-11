@@ -1,7 +1,5 @@
 from fastapi import FastAPI
+from app.apiRouter import router
 
 app = FastAPI()
-
-@router.get("/")
-async def hpg():
-    return {"Message": "This is the start of an amazing project"}
+app.include_router(router)
