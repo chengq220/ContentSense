@@ -2,8 +2,14 @@ version: '3.9'
 
 services: 
   ml-services:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        HF_TOKEN: ${HF_TOKEN}
     volumes:
       - .:/ContentSense
     ports: 
       - 8000:8000
+    environment:
+      HF_TOKEN: ${HF_TOKEN}
