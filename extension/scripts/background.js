@@ -5,9 +5,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // Query the URL of the current active/focused tab
     if(message.type == "loadingContent"){
         chrome.tabs.query({ active: true, currentWindow: true}, (tab) => {
-            url_link = tab[0].url;
+            title = tab[0].title ;
             chrome.storage.local.get('content').then((data) => {
-                sendResponse({url: url_link, content: data.content});
+                sendResponse({title: title, content: data.content});
             });
         });
     }

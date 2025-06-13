@@ -11,8 +11,7 @@ function get_content(){
     catch(error){
         console.error("Error: ", error);
         return null;
-    }
-    
+    }   
 }
 
 function sendContent(){
