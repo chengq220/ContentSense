@@ -1,8 +1,7 @@
-from transformers import AutoModelForCausalLM
-import os
-from dotenv import load_dotenv
+# Load model directly
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import os 
 
-load_dotenv()
-
-base_model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3.1-8B-Instruct", token=os.getenv('HF_TOKEN'))
-base_model.save_pretrained("/ContentSense/app/model/")
+exist = os.path.exists("root/.cache/huggingface/models--KoalaAI--Text-Moderation")
+tokenizer = AutoTokenizer.from_pretrained("KoalaAI/Text-Moderation", locallocal_files_only=exist)
+model = AutoModelForSequenceClassification.from_pretrained("KoalaAI/Text-Moderation", local_files_only=exist)
