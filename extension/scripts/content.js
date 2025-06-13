@@ -1,27 +1,28 @@
-chrome.runtime.sendMessage('get_url', (response) => {
-    if(chrome.runtime.lastError){
-        console.error("Error:", chrome.runtime.lastError.message);
-    }else{
-        console.log('received data', response);
-    }
-});
-
+// Content have access to the DOM/the page information like innerHTML etc.
 function get_content(){
     try{
         var text = document.documentElement.innerText;
-        const processText = text.match(/[^?!.]*[?!.]/g);
-        processText.shift();
+        const processText = text.match(/[^?!.]*[?!.]/g) || [];  
         if(processText.length > 0){
-            console.log(processText[0]);
-
-            console.log('text extracted');
-        }else{
-            console.log("text not extracted");
+            processText.shift();
         }
-    }catch(error){
-        console.error("Error: Unable to get text from the page");
+        return processText;
+    }
+    catch(error){
+        console.error("Error: ", error);
+        return null;
     }
     
 }
 
-get_content();
+function sendContent(){
+    const content = get_content();
+    chrome.runtime.sendMessage({ type: "contentReady", data: content });
+};
+
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", sendContent);
+} else {
+    sendContent();
+}
