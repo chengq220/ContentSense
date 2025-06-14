@@ -5,7 +5,7 @@ from dataset import get_dataloader
 import tqdm 
 from utils import load
 
-def evaluate(path, n_classes = 8, batch = 16, DEVICE = "cpu"):
+def evaluate(path, n_classes = 9, batch = 16, DEVICE = "cpu"):
     model = FCN(n_classes=n_classes).to(DEVICE)
     _ = load(path, model=model, optimizer=None)
     

@@ -9,8 +9,8 @@ import tqdm
 from utils import save
 from evaluate import evaluate
 
-def train(learning_rate = 0.0001, batch = 16, epochs = 100, DEVICE = "cpu", beta = 0.5, T = 2, enableWandb = False):
-    student = FCN(n_classes=8).to(DEVICE)
+def train(learning_rate = 0.0001, batch = 16, epochs = 100, n_classes = 9, DEVICE = "cpu", beta = 0.5, T = 2, enableWandb = False):
+    student = FCN(n_classes=n_classes).to(DEVICE)
     teacher = ModerationModel()
 
     if(enableWandb):
@@ -49,7 +49,7 @@ def train(learning_rate = 0.0001, batch = 16, epochs = 100, DEVICE = "cpu", beta
             running_loss += loss.item()
         
         epoch_loss = running_loss / len(trainLoader)
-        accuracy = evaluate(path="weights/latest.pth", DEVICE=DEVICE)
+        accuracy = evaluate(path="weights/latest.pth", n_classes= n_classes, DEVICE=DEVICE)
 
         if(enableWandb):
             wandb.log({"Training Loss": epoch_loss})

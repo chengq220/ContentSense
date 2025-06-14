@@ -9,6 +9,9 @@ Dataset object for custom datasets
 class ContentDataset(Dataset):
     def __init__(self, isTrain = True):
         data = pd.read_json("hf://datasets/mmathys/openai-moderation-api-evaluation/samples-1680.jsonl.gz", lines=True).fillna(0)
+        data_OK = data.drop(columns=["prompt"]).astype(bool)
+        OK = data_OK[["S", "H", "V", "HR","SH","S3","H2","V2"]].all(axis=1).astype(float)
+        data["OK"] = OK
         shuffle = data.sample(frac=1, random_state=42).reset_index(drop=True)
         split = int(0.8 * shuffle.shape[0])
         if isTrain:

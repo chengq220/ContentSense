@@ -16,3 +16,18 @@ def save(path, epoch, model, optimizer):
         'optimizer': optimizer.state_dict()
     }
     torch.save(checkpoint, path)
+
+def get_classes_from_idx(idx:list) -> list:
+    configureTable = {
+        0: "S", 
+        1: "H",
+        2: "V",
+        3: "HR",
+        4: "SH",
+        5: "S3",
+        6: "H2",
+        7: "V2", 
+        8: "OK"
+    }
+    output = [configureTable[iidx] for iidx in idx]
+    return output
