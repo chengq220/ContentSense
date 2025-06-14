@@ -6,10 +6,16 @@ from dataset import get_dataloader
 import torch.optim as optim
 import wandb
 import tqdm 
+from utils import save
+from evaluate import evaluate
 
-def train(learning_rate = 0.0001, batch = 16, epochs = 100, DEVICE = "cuda:0", beta = 0.5, T = 2):
+def train(learning_rate = 0.0001, batch = 16, epochs = 100, DEVICE = "cpu", beta = 0.5, T = 2, enableWandb = False):
     student = FCN(n_classes=8).to(DEVICE)
     teacher = ModerationModel()
+
+    if(enableWandb):
+        wandb.init(project="ContentModeration")
+        wandb.watch(student, log='all')
     
     student.train()
 
@@ -17,7 +23,6 @@ def train(learning_rate = 0.0001, batch = 16, epochs = 100, DEVICE = "cuda:0", b
     CSE = nn.CrossEntropyLoss().to(DEVICE) # Already contains softmax in the criterion
 
     optimizer = optim.Adam(student.parameters(), lr=learning_rate)
-
 
     for epoch in range(epochs):
         running_loss = 0.0
@@ -42,8 +47,17 @@ def train(learning_rate = 0.0001, batch = 16, epochs = 100, DEVICE = "cuda:0", b
             optimizer.step()
 
             running_loss += loss.item()
+        
+        epoch_loss = running_loss / len(trainLoader)
+        accuracy = evaluate(path="weights/latest.pth", DEVICE=DEVICE)
 
-        print(f"Epoch {epoch+1}/{epochs}, Loss: {running_loss / len(trainLoader)}")
+        if(enableWandb):
+            wandb.log({"Training Loss": epoch_loss})
+            wandb.log({"Test Accuracy": accuracy})
 
+        if(epoch % 10 == 0):
+            save(path=f"weights/{epoch}.pth", epoch = epoch, model = student, optimizer= optimizer)
+        save(path=f"weights/latest.pth", epoch = epoch, model = student, optimizer= optimizer)
 
 if __name__ == "__main__":
+    train(DEVICE="cuda:0")
