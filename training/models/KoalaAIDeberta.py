@@ -8,8 +8,8 @@ class ModerationModel():
         self.tokenizer = AutoTokenizer.from_pretrained("KoalaAI/Text-Moderation", local_files_only=exist, padding=True)
         self.model = AutoModelForSequenceClassification.from_pretrained("KoalaAI/Text-Moderation", local_files_only=exist)
 
-    def pred_logit(self, inputs):
-        tokenizedInputs = self.tokenizer(inputs, return_tensors="pt")
+    def pred_logit_string(self, inputs):
+        tokenizedInputs = self.tokenizer(inputs,  padding="max_length", truncation=True, max_length=42, return_tensors="pt")
         with torch.no_grad():
             logits = self.model(**tokenizedInputs).logits
             return logits

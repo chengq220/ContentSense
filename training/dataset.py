@@ -25,17 +25,28 @@ class ContentDataset(Dataset):
         query = item.iloc[0]
         tokenized_query = self.tokenizer(query, padding="max_length", truncation=True, max_length=42, return_tensors="pt")
         one_hot = torch.tensor([item.iloc[iidx] for iidx in range(1, len(item))])
-        return tokenized_query["input_ids"].squeeze(0), one_hot
+        return tokenized_query["input_ids"].squeeze(0), one_hot, query
 
+def custom_collate(batch):
+    ft = []
+    lb = []
+    q = []
+    for idx, (feature, label, query) in enumerate(batch):
+        ft.append(feature)
+        lb.append(label)
+        q.append(query)
+    return torch.stack(ft), torch.stack(lb), q
+    
 def get_dataloader(batch = 16, isTrain = True):
     dataset = ContentDataset(isTrain = isTrain)
-    loader = DataLoader(dataset, batch_size=batch, shuffle=True, drop_last=True)
+    loader = DataLoader(dataset, batch_size=batch, shuffle=True, drop_last=True, collate_fn=custom_collate)
     return loader
 
 if __name__ == "__main__":
     loader = get_dataloader()
     for i, batch in enumerate(loader):
-        text, label = batch
-        print(text)
-        print(label)
+        feature, label, tokenizer_out = batch
+        print(feature.shape)
+        print(label.shape)
+        print(tokenizer_out)
         exit()
