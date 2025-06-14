@@ -5,6 +5,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 ARG HF_TOKEN
 ENV HF_TOKEN=$HF_TOKEN
 COPY . .
-COPY model_download.py ./
-RUN python model_download.py
 CMD ["uvicorn", "app.app:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8000","--reload"]

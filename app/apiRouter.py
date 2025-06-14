@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.model import ModerationModel
+from app.models.KoalaAIDeberta import ModerationModel
 import torch 
 
 router = APIRouter()
@@ -16,3 +16,7 @@ async def predict(payload:dict) -> dict:
     level = "Not safe"
     numViolation = len(sentences)
     return {"level": level, "violation": numViolation, "output": output }
+
+@router.post("/query")
+async def asdfa(payload):
+    return {"hi": "hi"}
