@@ -1,5 +1,6 @@
 import torch
 import torch.nn as tnn
+from config import N_CLASSES, TOKEN_MAX_LENGTH
 
 def conv_layer(channel_in, channel_out):
     layer = tnn.Sequential(
@@ -19,10 +20,10 @@ def fc_layer(size_in, size_out):
     return layer
 
 class CNN(tnn.Module):
-    def __init__(self, num_seq = 64, embedding_size = 36, n_classes=7, kernel_size = 2, stride = 2):
+    def __init__(self, embedding_size = 36, kernel_size = 2, stride = 2):
         super(CNN, self).__init__()
         self.pooling = tnn.MaxPool1d(kernel_size=kernel_size, stride=stride)
-        self.embedding = tnn.Embedding(num_seq, embedding_size) 
+        self.embedding = tnn.Embedding(TOKEN_MAX_LENGTH, embedding_size) 
         
         self.conv1 = conv_layer(embedding_size, 64) 
         self.conv2 = conv_layer(64, 128) 
@@ -31,7 +32,7 @@ class CNN(tnn.Module):
         
         self.fc1 = fc_layer(256 * 16, 2048) 
         self.fc2 = fc_layer(2048, 2048) 
-        self.fc3 = tnn.Linear(2048, n_classes)
+        self.fc3 = tnn.Linear(2048, N_CLASSES)
 
     def forward(self, x):
         embed = self.embedding(x).permute(0,2,1) # b x 36 x 64 

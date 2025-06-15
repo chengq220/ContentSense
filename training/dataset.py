@@ -2,6 +2,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
 from transformers import AutoTokenizer
+from config import TOKEN_MAX_LENGTH
 
 """
 Dataset object for custom datasets 
@@ -10,7 +11,7 @@ class ContentDataset(Dataset):
     def __init__(self, isTrain = True):
         data = pd.read_json("hf://datasets/mmathys/openai-moderation-api-evaluation/samples-1680.jsonl.gz", lines=True).fillna(0)
         data_OK = data.drop(columns=["prompt"]).astype(bool)
-        OK = data_OK[["S", "H", "V", "HR","SH","S3","H2","V2"]].all(axis=1).astype(float)
+        OK = (data_OK[["S", "H", "V", "HR","SH","S3","H2","V2"]] == 0).all(axis=1).astype(float)
         data["OK"] = OK
         shuffle = data.sample(frac=1, random_state=42).reset_index(drop=True)
         split = int(0.8 * shuffle.shape[0])
@@ -26,7 +27,7 @@ class ContentDataset(Dataset):
     def __getitem__(self, idx):
         item = self.df.iloc[idx]
         query = item.iloc[0]
-        tokenized_query = self.tokenizer(query, padding="max_length", truncation=True, max_length=64, return_tensors="pt")
+        tokenized_query = self.tokenizer(query, padding="max_length", truncation=True, max_length=TOKEN_MAX_LENGTH, return_tensors="pt")
         one_hot = torch.tensor([item.iloc[iidx] for iidx in range(1, len(item))])
         return tokenized_query["input_ids"].squeeze(0), one_hot, query
 

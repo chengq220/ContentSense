@@ -1,0 +1,8 @@
+TOKEN_MAX_LENGTH = 64
+BATCH = 16
+EPOCHS = 100
+WANDBON = False
+LR = 0.0001
+N_CLASSES = 9
+DEVICE = "cpu"
+SAVE_DIR = "weights"

@@ -1,6 +1,7 @@
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import os 
 import torch
+from config import TOKEN_MAX_LENGTH
 
 class ModerationModel():
     def __init__(self):
@@ -9,7 +10,7 @@ class ModerationModel():
         self.model = AutoModelForSequenceClassification.from_pretrained("KoalaAI/Text-Moderation", local_files_only=exist)
 
     def pred_logit(self, inputs):
-        tokenizedInputs = self.tokenizer(inputs, padding="max_length", truncation=True, max_length=42, return_tensors="pt")
+        tokenizedInputs = self.tokenizer(inputs, padding="max_length", truncation=True, max_length=TOKEN_MAX_LENGTH, return_tensors="pt")
         with torch.no_grad():
             logits = self.model(**tokenizedInputs).logits
             return logits
