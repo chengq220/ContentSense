@@ -39,7 +39,7 @@ def train(beta = 0.5, T = 2):
             x = feature.to(DEVICE)
             y = label.to(DEVICE)
 
-            teacher_logit = teacher.pred_logit(query)
+            teacher_logit = teacher.pred_logit(query).to(DEVICE)
 
             optimizer.zero_grad()
             student_logit = student(x)
@@ -56,17 +56,17 @@ def train(beta = 0.5, T = 2):
             optimizer.step()
 
             running_loss += loss.item()
+            
+        if(epoch % 10 == 0):
+            save(path=f"{SAVE_DIR}/{epoch}.pth", epoch = epoch, model = student, optimizer= optimizer)
+        save(path=f"{SAVE_DIR}/latest.pth", epoch = epoch, model = student, optimizer= optimizer)
         
         epoch_loss = running_loss / len(trainLoader)
-        accuracy = evaluate(path=f"{SAVE_DIR}/latest.pth", n_classes= N_CLASSES, DEVICE=DEVICE)
+        accuracy = evaluate(path=f"{SAVE_DIR}/latest.pth")
 
         if(WANDBON):
             wandb.log({"Training Loss": epoch_loss})
             wandb.log({"Test Accuracy": accuracy})
-
-        if(epoch % 10 == 0):
-            save(path=f"{SAVE_DIR}/{epoch}.pth", epoch = epoch, model = student, optimizer= optimizer)
-        save(path=f"{SAVE_DIR}/latest.pth", epoch = epoch, model = student, optimizer= optimizer)
 
 if __name__ == "__main__":
     train()

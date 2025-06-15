@@ -4,18 +4,19 @@ from models.CNN import CNN
 from dataset import get_dataloader
 from tqdm import tqdm
 from utils import load
+from config import N_CLASSES, DEVICE, BATCH
 
-def evaluate(path, n_classes = 9, batch = 16, DEVICE = "cpu"):
-    model = CNN(n_classes=n_classes).to(DEVICE)
+def evaluate(path):
+    testLoader, vocab_size = get_dataloader(batch=BATCH, isTrain=False)
+
+    model = CNN(vocab_size=vocab_size, n_classes=N_CLASSES).to(DEVICE)
     _ = load(path, model=model, optimizer=None)
-    
-    testLoader = get_dataloader(batch=batch, isTrain=False)
 
     model.eval()
     total_samples = 0
     num_correct = 0
     
-    for idx, (feature, label, _) in enumerate(tqdm(testLoader)):
+    for idx, (feature, label, query) in enumerate(tqdm(testLoader)):
         total_samples += feature.shape[0]
 
         feature = feature.to(DEVICE)

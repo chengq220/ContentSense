@@ -51,7 +51,7 @@ def get_dataloader(batch = 16, isTrain = True):
     return loader, dataset.tokenizer_vocab_size
 
 if __name__ == "__main__":
-    loader = get_dataloader()
+    loader_vocab = get_dataloader(isTrain=False)
     for i, batch in enumerate(loader):
         feature, label, tokenizer_out = batch
         print(feature.shape)
