@@ -26,7 +26,7 @@ class ContentDataset(Dataset):
     def __getitem__(self, idx):
         item = self.df.iloc[idx]
         query = item.iloc[0]
-        tokenized_query = self.tokenizer(query, padding="max_length", truncation=True, max_length=42, return_tensors="pt")
+        tokenized_query = self.tokenizer(query, padding="max_length", truncation=True, max_length=64, return_tensors="pt")
         one_hot = torch.tensor([item.iloc[iidx] for iidx in range(1, len(item))])
         return tokenized_query["input_ids"].squeeze(0), one_hot, query
 

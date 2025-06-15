@@ -1,12 +1,12 @@
 import torch
 import torch.nn as nn
-from models.FCN import FCN
+from models.CNN import CNN
 from dataset import get_dataloader
-import tqdm 
+from tqdm import tqdm
 from utils import load
 
 def evaluate(path, n_classes = 9, batch = 16, DEVICE = "cpu"):
-    model = FCN(n_classes=n_classes).to(DEVICE)
+    model = CNN(n_classes=n_classes).to(DEVICE)
     _ = load(path, model=model, optimizer=None)
     
     testLoader = get_dataloader(batch=batch, isTrain=False)
@@ -15,7 +15,7 @@ def evaluate(path, n_classes = 9, batch = 16, DEVICE = "cpu"):
     total_samples = 0
     num_correct = 0
     
-    for idx, (feature, label, _) in tqdm(testLoader):
+    for idx, (feature, label, _) in enumerate(tqdm(testLoader)):
         total_samples += feature.shape[0]
 
         feature = feature.to(DEVICE)
