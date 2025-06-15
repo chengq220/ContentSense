@@ -13,7 +13,6 @@ from config import *
 def train(beta = 0.5, T = 2):
     trainLoader, vocab_size = get_dataloader(batch=BATCH)
     student = CNN(vocab_size=vocab_size, n_classes=N_CLASSES).to(DEVICE)
-    teacher = ModerationModel()
 
     if(WANDBON):
         wandb.init(
@@ -29,17 +28,16 @@ def train(beta = 0.5, T = 2):
         )
     
     student.train()
-    CSE = nn.CrossEntropyLoss().to(DEVICE) # Already contains softmax in the criterion
+    CE = nn.CrossEntropyLoss().to(DEVICE) # Already contains softmax in the criterion
 
     optimizer = optim.Adam(student.parameters(), lr=LR)
 
     for epoch in range(EPOCHS):
         running_loss = 0.0
-        for idx, (feature, label, query) in enumerate(tqdm(trainLoader)):
+        for idx, (feature, label, teacher_logit) in enumerate(tqdm(trainLoader)):
             x = feature.to(DEVICE)
             y = label.to(DEVICE)
-
-            teacher_logit = teacher.pred_logit(query).to(DEVICE)
+            teacher_logit = teacher_logit.to(DEVICE)
 
             optimizer.zero_grad()
             student_logit = student(x)
@@ -48,7 +46,7 @@ def train(beta = 0.5, T = 2):
             soft_prob = nn.functional.log_softmax(student_logit / T, dim=-1)
 
             teacher_student_loss = torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * (T**2)
-            gt_difference_loss = CSE(student_logit, y)
+            gt_difference_loss = CE(student_logit, y)
 
             loss = (1-beta) * teacher_student_loss + (beta) * gt_difference_loss
             

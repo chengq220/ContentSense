@@ -17,6 +17,13 @@ class ModerationModel():
     def pred_classes(self, inputs):
         logits = self.pred_logit(inputs)
         predicted_class_id = logits.argmax(dim=1)
+        print(predicted_class_id)
+        print(self.model.config.id2label)
         pred_class = [self.model.config.id2label[idx.item()] for idx in predicted_class_id]
         return pred_class
     
+
+if __name__ == "__main__":
+    query = "how are you doing are you doing fine?"
+    model = ModerationModel()
+    print(model.pred_classes([query]))

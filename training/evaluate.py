@@ -16,7 +16,7 @@ def evaluate(path):
     total_samples = 0
     num_correct = 0
     
-    for idx, (feature, label, query) in enumerate(tqdm(testLoader)):
+    for idx, (feature, label, teacher_logit) in enumerate(tqdm(testLoader)):
         total_samples += feature.shape[0]
 
         feature = feature.to(DEVICE)

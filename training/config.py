@@ -2,7 +2,7 @@ import os
 
 BATCH = 16
 EPOCHS = 100
-WANDBON = False
+WANDBON = True
 LR = 0.0001
 N_CLASSES = 9
 DEVICE = "cuda:0"
