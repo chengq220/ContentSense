@@ -2,23 +2,26 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
 from transformers import AutoTokenizer
+import ast
 
 """
 Dataset object for custom datasets 
 """
 class ContentDataset(Dataset):
     def __init__(self, isTrain = True):
-        data = pd.read_json("hf://datasets/mmathys/openai-moderation-api-evaluation/samples-1680.jsonl.gz", lines=True).fillna(0)
-        data_OK = data.drop(columns=["prompt"]).astype(bool)
-        OK = (data_OK[["S", "H", "V", "HR","SH","S3","H2","V2"]] == 0).all(axis=1).astype(float)
-        data["OK"] = OK
+        data = pd.read_csv("training/dataset.csv")
         shuffle = data.sample(frac=1, random_state=42).reset_index(drop=True)
+        full_logit = shuffle["logit"]
+        shuffle = shuffle.drop(columns = ["logit"])
         split = int(0.8 * shuffle.shape[0])
         if isTrain:
             self.df = shuffle.iloc[0:split]
+            self.logit = full_logit.iloc[0:split]
         else:
             self.df = shuffle.iloc[split:]
+            self.logit = full_logit.iloc[split:]
         self.tokenizer = AutoTokenizer.from_pretrained("KoalaAI/Text-Moderation")
+        
 
     def __len__(self):
         return self.df.shape[0]
@@ -28,7 +31,8 @@ class ContentDataset(Dataset):
         query = item.iloc[0]
         tokenized_query = self.tokenizer(query, padding="max_length", truncation=True, return_tensors="pt")
         one_hot = torch.tensor([item.iloc[iidx] for iidx in range(1, len(item))])
-        return tokenized_query["input_ids"].squeeze(0), one_hot, query
+        cur_logit = torch.tensor(ast.literal_eval(self.logit.iloc[idx])[0], dtype=float)
+        return tokenized_query["input_ids"].squeeze(0), one_hot, cur_logit
     
     @property
     def tokenizer_vocab_size(self):
@@ -38,12 +42,12 @@ class ContentDataset(Dataset):
 def custom_collate(batch):
     ft = []
     lb = []
-    q = []
+    logits = []
     for idx, (feature, label, query) in enumerate(batch):
         ft.append(feature)
         lb.append(label)
-        q.append(query)
-    return torch.stack(ft), torch.stack(lb), q
+        logits.append(query)
+    return torch.stack(ft), torch.stack(lb), torch.stack(logits)
     
 def get_dataloader(batch = 16, isTrain = True):
     dataset = ContentDataset(isTrain = isTrain)
@@ -51,10 +55,10 @@ def get_dataloader(batch = 16, isTrain = True):
     return loader, dataset.tokenizer_vocab_size
 
 if __name__ == "__main__":
-    loader_vocab = get_dataloader(isTrain=False)
+    loader, vocab = get_dataloader(isTrain=False)
     for i, batch in enumerate(loader):
-        feature, label, tokenizer_out = batch
+        feature, label, logits = batch
         print(feature.shape)
         print(label.shape)
-        print(tokenizer_out)
-        exit()
+        print(logits.shape)
+
