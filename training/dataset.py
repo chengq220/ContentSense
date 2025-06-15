@@ -2,7 +2,6 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
 from transformers import AutoTokenizer
-from config import TOKEN_MAX_LENGTH
 
 """
 Dataset object for custom datasets 
@@ -27,9 +26,14 @@ class ContentDataset(Dataset):
     def __getitem__(self, idx):
         item = self.df.iloc[idx]
         query = item.iloc[0]
-        tokenized_query = self.tokenizer(query, padding="max_length", truncation=True, max_length=TOKEN_MAX_LENGTH, return_tensors="pt")
+        tokenized_query = self.tokenizer(query, padding="max_length", truncation=True, return_tensors="pt")
         one_hot = torch.tensor([item.iloc[iidx] for iidx in range(1, len(item))])
         return tokenized_query["input_ids"].squeeze(0), one_hot, query
+    
+    @property
+    def tokenizer_vocab_size(self):
+        return self.tokenizer.vocab_size
+
 
 def custom_collate(batch):
     ft = []
@@ -44,7 +48,7 @@ def custom_collate(batch):
 def get_dataloader(batch = 16, isTrain = True):
     dataset = ContentDataset(isTrain = isTrain)
     loader = DataLoader(dataset, batch_size=batch, shuffle=True, drop_last=True, collate_fn=custom_collate)
-    return loader
+    return loader, dataset.tokenizer_vocab_size
 
 if __name__ == "__main__":
     loader = get_dataloader()

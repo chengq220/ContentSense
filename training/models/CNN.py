@@ -1,6 +1,5 @@
 import torch
 import torch.nn as tnn
-from config import N_CLASSES, TOKEN_MAX_LENGTH
 
 def conv_layer(channel_in, channel_out):
     layer = tnn.Sequential(
@@ -20,22 +19,24 @@ def fc_layer(size_in, size_out):
     return layer
 
 class CNN(tnn.Module):
-    def __init__(self, embedding_size = 36, kernel_size = 2, stride = 2):
+    def __init__(self, vocab_size = 512, embedding_size = 36, n_classes=7, kernel_size = 2, stride = 2):
         super(CNN, self).__init__()
         self.pooling = tnn.MaxPool1d(kernel_size=kernel_size, stride=stride)
-        self.embedding = tnn.Embedding(TOKEN_MAX_LENGTH, embedding_size) 
+        self.embedding = tnn.Embedding(vocab_size, embedding_size) 
+        print(self.embedding)
         
         self.conv1 = conv_layer(embedding_size, 64) 
         self.conv2 = conv_layer(64, 128) 
         self.conv3 = conv_layer(128, 256) 
         self.conv4 = conv_layer(256, 256)
         
-        self.fc1 = fc_layer(256 * 16, 2048) 
+        self.fc1 = fc_layer(256*128, 2048) 
         self.fc2 = fc_layer(2048, 2048) 
-        self.fc3 = tnn.Linear(2048, N_CLASSES)
+        self.fc3 = tnn.Linear(2048, n_classes)
 
     def forward(self, x):
-        embed = self.embedding(x).permute(0,2,1) # b x 36 x 64 
+        embed = self.embedding(x).permute(0,2,1) # b x max_length x vocab_size
+        print(embed.shape)
         
         out = self.conv1(embed) # b x 64 x 64
         out = self.conv2(out) # b x 128 x 64
@@ -44,9 +45,8 @@ class CNN(tnn.Module):
         out = self.conv3(out) #b x 256 x 32
         out = self.conv4(out) # b x 256 x  32
         out = self.pooling(out) # b x 256 x 16
-        
         flat = out.reshape((out.shape[0], -1)) # b x 256 * 16
-        
+
         out = self.fc1(flat) # b x 2048
         out = self.fc2(out) # b x 2048
         logit = self.fc3(out) # b x num_classes
