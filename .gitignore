@@ -195,3 +195,5 @@ cython_debug/
 
 # data files
 *.jsonl
+
+wandb/

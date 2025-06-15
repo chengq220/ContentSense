@@ -16,8 +16,17 @@ def train(beta = 0.5, T = 2):
     teacher = ModerationModel()
 
     if(WANDBON):
-        wandb.init(project="ContentModeration")
-        wandb.watch(student, log='all')
+        wandb.init(
+            project="ContentSense",
+            config={
+                "learning_rate": LR,
+                "architecture": "CNN",
+                "dataset": "Moderation-OpenAI",
+                "epochs": EPOCHS,
+                "optimzer": "Adams",
+                "Loss": "CE + Distillation Loss"
+            },
+        )
     
     student.train()
     CSE = nn.CrossEntropyLoss().to(DEVICE) # Already contains softmax in the criterion
@@ -34,7 +43,6 @@ def train(beta = 0.5, T = 2):
 
             optimizer.zero_grad()
             student_logit = student(x)
-            exit()
 
             soft_targets = nn.functional.softmax(teacher_logit / T, dim=-1)
             soft_prob = nn.functional.log_softmax(student_logit / T, dim=-1)

@@ -23,8 +23,7 @@ class CNN(tnn.Module):
         super(CNN, self).__init__()
         self.pooling = tnn.MaxPool1d(kernel_size=kernel_size, stride=stride)
         self.embedding = tnn.Embedding(vocab_size, embedding_size) 
-        print(self.embedding)
-        
+
         self.conv1 = conv_layer(embedding_size, 64) 
         self.conv2 = conv_layer(64, 128) 
         self.conv3 = conv_layer(128, 256) 
@@ -35,17 +34,16 @@ class CNN(tnn.Module):
         self.fc3 = tnn.Linear(2048, n_classes)
 
     def forward(self, x):
-        embed = self.embedding(x).permute(0,2,1) # b x max_length x vocab_size
-        print(embed.shape)
+        embed = self.embedding(x).permute(0,2,1) # b x embedding_size x max_length
         
-        out = self.conv1(embed) # b x 64 x 64
-        out = self.conv2(out) # b x 128 x 64
-        out = self.pooling(out) #b x 128 x 32
+        out = self.conv1(embed) # b x 64 x 512
+        out = self.conv2(out) # b x 128 x 512
+        out = self.pooling(out) #b x 128 x 256
        
-        out = self.conv3(out) #b x 256 x 32
-        out = self.conv4(out) # b x 256 x  32
-        out = self.pooling(out) # b x 256 x 16
-        flat = out.reshape((out.shape[0], -1)) # b x 256 * 16
+        out = self.conv3(out) #b x 256 x 256
+        out = self.conv4(out) # b x 256 x 256
+        out = self.pooling(out) # b x 256 x 128
+        flat = out.reshape((out.shape[0], -1)) # b x 256 * 128
 
         out = self.fc1(flat) # b x 2048
         out = self.fc2(out) # b x 2048
