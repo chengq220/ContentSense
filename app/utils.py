@@ -1,7 +1,7 @@
 import torch
 
 def load(path, model, optimizer):
-    checkpoint = torch.load(path)
+    checkpoint = torch.load(path, map_location=torch.device('cpu'))
     if(model):
         model.load_state_dict(checkpoint['model'])
     if(optimizer):

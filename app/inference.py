@@ -1,7 +1,7 @@
-from models.CNN import CNN
+from app.models.CNN import CNN
 import torch
 import torch.nn as nn
-from utils import get_classes_from_idx
+from app.utils import get_classes_from_idx
 
 def inference(query, model, tokenizer):
     tokenized_query = tokenizer(query, padding="max_length", truncation=True, return_tensors="pt")
