@@ -32,6 +32,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if(message.type == "contentReady"){
         chrome.storage.local.set({content : message.data}, function(response){});
     };
+    if(message.type == "proceed"){
+        chrome.tabs.query({ active: true, currentWindow: true}, (tab) => {
+           chrome.tabs.sendMessage(tab[0].id, {type: "proceed"}, function(response) {});  
+        });
+    }
 });
 
 function checkSafety(id, level) {

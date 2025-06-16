@@ -15,3 +15,5 @@ if (document.readyState === "loading") {
 } else {
     retrieveData();
 }
+
+// chrome.runtime.onInstalled.addListener(() => {

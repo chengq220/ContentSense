@@ -43,16 +43,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         iframe.style.border = "none";
         iframe.style.zIndex = "9999";
         iframe.style.display = "block";
-
         if(!document.body.contains(iframe)){
             document.body.appendChild(iframe);
         }
     }
 
     if(request.type == "proceed"){
-        console.log("proceed to close iframe")
         iframe.style.display = "none";
     }
-
-    return true;
 });
