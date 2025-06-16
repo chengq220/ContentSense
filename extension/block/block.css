@@ -28,3 +28,12 @@ body{
     font-weight: bold;
     font-size:25px;
 }
+
+#continue-btn{
+    padding:5px;
+    background-color: red;
+}
+
+#continue-btn.hover{
+    cursor:pointer;
+}

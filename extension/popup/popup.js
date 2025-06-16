@@ -1,4 +1,5 @@
 const setContent = response => {
+    console.log(response)
     document.getElementById('title').textContent = response.title;
     document.getElementById('violation').textContent = response.res.violation;
     document.getElementById('safety').textContent = response.res.level;
@@ -16,4 +17,5 @@ if (document.readyState === "loading") {
     retrieveData();
 }
 
+// retrieveData();
 // chrome.runtime.onInstalled.addListener(() => {
