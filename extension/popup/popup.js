@@ -1,6 +1,8 @@
 const setContent = response => {
+    console.log(response.res)
     document.getElementById('title').textContent = response.title;
-    document.getElementById('content').textContent = response.content.length;
+    document.getElementById('violation').textContent = response.res.violation;
+    document.getElementById('safety').textContent = response.res.level;
 };
 
 function retrieveData(){

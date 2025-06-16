@@ -2,10 +2,11 @@
 function get_content(){
     try{
         var text = document.documentElement.innerText;
-        const processText = text.match(/[^?!.]*[?!.]/g) || [];  
+        var processText = text.match(/[^?!.]*[?!.]/g) || [];  
         if(processText.length > 0){
             processText.shift();
         }
+        processText = processText.filter((text, idx) => text.length > 15 && idx % 2 == 0)
         return processText;
     }
     catch(error){
