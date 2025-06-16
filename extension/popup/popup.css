@@ -7,6 +7,19 @@
     flex-direction: column;
 }
 
-#overflow{
+#title{
+    font-weight: bold;
+}
+
+.overflow{
+    white-space: nowrap;
     text-overflow: ellipsis;
+    width: 250px;
+    overflow: hidden;
+    flex: 0 0 auto;
+}
+
+.element{
+    padding-bottom:10px;
+    font-size:20px;
 }
