@@ -9,7 +9,7 @@ Dataset object for custom datasets
 """
 class ContentDataset(Dataset):
     def __init__(self, isTrain = True):
-        data = pd.read_csv("training/dataset.csv")
+        data = pd.read_csv("dataset.csv")
         shuffle = data.sample(frac=1, random_state=42).reset_index(drop=True)
         full_logit = shuffle["logit"]
         shuffle = shuffle.drop(columns = ["logit"])
