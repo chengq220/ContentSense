@@ -1,5 +1,4 @@
 const setContent = response => {
-    console.log(response.res)
     document.getElementById('title').textContent = response.title;
     document.getElementById('violation').textContent = response.res.violation;
     document.getElementById('safety').textContent = response.res.level;

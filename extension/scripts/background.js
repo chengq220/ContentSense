@@ -3,6 +3,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if(message.type == "loadingContent"){
         chrome.tabs.query({ active: true, currentWindow: true}, (tab) => {
             const title = tab[0].title;
+            const id = tab[0].id;
             chrome.storage.local.get('content').then((data) => {
                 payload = {
                     "content": data.content
@@ -16,7 +17,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 })
                 .then(res => res.json())
                 .then(dat => {
-                    checkSafety(dat.level);
+                    // console.log("processing data");
+                    checkSafety(id, dat.level);
                     sendResponse({title: title, res: dat});
                 })
                 .catch(err => {
@@ -25,16 +27,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 });
             });
         });
+        return true;
     }
     if(message.type == "contentReady"){
-        chrome.storage.local.set({content : message.data}).then(() => console.log("Content saved"));
+        chrome.storage.local.set({content : message.data}, function(response){});
     };
-
-    return true;
 });
 
-function checkSafety(level) {
+function checkSafety(id, level) {
     if(level == "Not safe"){
-        chrome.runtime.sendMessage({ type: "notSafeSetup" });
+        chrome.tabs.sendMessage(id, {type: "notSafeSetup"}, function(response) {});  
     }
 }

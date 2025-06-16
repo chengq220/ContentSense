@@ -34,7 +34,7 @@ const iframe = document.createElement("iframe");
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if(request.type == "notSafeSetup"){
-        iframe.src = blockURL;
+        iframe.src = block;
         iframe.style.position = "fixed";
         iframe.style.top = "0";
         iframe.style.left = "0";
@@ -50,6 +50,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 
     if(request.type == "proceed"){
+        console.log("proceed to close iframe")
         iframe.style.display = "none";
     }
 

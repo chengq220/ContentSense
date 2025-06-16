@@ -3,17 +3,13 @@
     <head>
         <link rel="stylesheet" href="block.css">
     </head>
-    <script>
-        function closeBlock(){
-            chrome.runtime.sendMessage({ type: "proceed" });
-        }
-    </script>
     <body>
         <div class="container">
             <div class = "message">
                 The page that you are trying to access contain inappropriate content. <br/>Please proceed with caution<br/>
-                <button onclick="closeBlock()">Continue to proceed to the page</button>
+                <button id="continue-btn">Continue to proceed to the page</button>
             </div>
         </div>
     </body>
+    <script type="text/javascript" src="block.js"></script>
 </html>

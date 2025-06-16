@@ -23,7 +23,13 @@
         "unlimitedStorage"
     ],
     "web_accessible_resources": [
-        "block/block.html", 
-        "block/block.css"
+        {
+            "resources": [
+                "block/block.html",
+                "block/block.css",
+                "block/block.js"
+            ],
+            "matches": ["<all_urls>"]
+        }
     ]
 }
