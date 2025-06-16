@@ -20,9 +20,38 @@ function sendContent(){
     chrome.runtime.sendMessage({ type: "contentReady", data: content });
 };
 
-
+// When DOM finishes loading, set the content to storage
 if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", sendContent);
 } else {
     sendContent();
 }
+
+//Once the content have been processed in the backend, display this block if 
+//there's safety hazard
+const block = chrome.runtime.getURL("block/block.html")
+const iframe = document.createElement("iframe");
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if(request.type == "notSafeSetup"){
+        iframe.src = blockURL;
+        iframe.style.position = "fixed";
+        iframe.style.top = "0";
+        iframe.style.left = "0";
+        iframe.style.width = "100vw";
+        iframe.style.height = "100vh";
+        iframe.style.border = "none";
+        iframe.style.zIndex = "9999";
+        iframe.style.display = "block";
+
+        if(!document.body.contains(iframe)){
+            document.body.appendChild(iframe);
+        }
+    }
+
+    if(request.type == "proceed"){
+        iframe.style.display = "none";
+    }
+
+    return true;
+});
