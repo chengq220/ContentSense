@@ -17,6 +17,8 @@ A lightweight Google Chrome extension to detect and prevent users from unintenti
 ### Training Neural Network
 1. The training procedure is stored in ```/training```
 2. Change ```/training/config.py``` to the desired values and run ```python training.py```
+The performance of the KoalaAI Content Moderation Model vs Distilled CNN is shown below
+![Performance](images/performance.png)
 
 ## Screenshots
 
