@@ -19,7 +19,7 @@ def fc_layer(size_in, size_out):
     return layer
 
 class CNN(tnn.Module):
-    def __init__(self, vocab_size = 512, embedding_size = 36, n_classes=7, kernel_size = 2, stride = 2):
+    def __init__(self, vocab_size = 512, embedding_size = 36, n_classes=7, kernel_size = 3, stride = 3):
         super(CNN, self).__init__()
         self.pooling = tnn.MaxPool1d(kernel_size=kernel_size, stride=stride)
         self.embedding = tnn.Embedding(vocab_size, embedding_size) 
@@ -29,7 +29,7 @@ class CNN(tnn.Module):
         self.conv3 = conv_layer(128, 256) 
         self.conv4 = conv_layer(256, 256)
         
-        self.fc1 = fc_layer(256*128, 2048) 
+        self.fc1 = fc_layer(14336, 2048) 
         self.fc2 = fc_layer(2048, 2048) 
         self.fc3 = tnn.Linear(2048, n_classes)
 

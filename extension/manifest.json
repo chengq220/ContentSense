@@ -10,6 +10,12 @@
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
+            "exclude_matches": [
+                "*://*.edu/*",
+                "*://*.gov/*",
+                "*://www.google.com/*",
+                "*://google.com/*"
+            ],
             "js": ["scripts/content.js"],
             "run_at": "document_end"
         }
@@ -29,7 +35,13 @@
                 "block/block.css",
                 "block/block.js"
             ],
-            "matches": ["<all_urls>"]
+            "matches": ["<all_urls>"],
+            "exclude_matches": [
+                "*://*.edu/*",
+                "*://*.gov/*",
+                "*://www.google.com/*",
+                "*://google.com/*"
+            ]
         }
     ]
 }
