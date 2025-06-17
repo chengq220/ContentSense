@@ -22,6 +22,7 @@ The performance of the KoalaAI Content Moderation Model vs Distilled CNN is show
 
 ## Screenshots
 The extension UI, when installed in Chrome
+
 ![ExtensionUI](images/extension_UI.png)
 
 When unsafe content is detected, the extension is going to inject a blocker message shown below into the website the user is visiting to inform the user about the potential risk
