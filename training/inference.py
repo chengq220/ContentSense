@@ -4,6 +4,7 @@ from transformers import AutoTokenizer
 import torch
 import torch.nn as nn
 from utils import load, get_classes_from_idx
+import time
 
 def inference(query):
     tokenizer = AutoTokenizer.from_pretrained("KoalaAI/Text-Moderation")
@@ -22,6 +23,8 @@ def inference(query):
 
 
 if __name__ == "__main__":
-    query = ["how are you doing? Wanna kill yourself?", "how about going out for "]
+    query = ["how are you doing? Wanna kill yourself?"]
+    start = time.time()
     output = inference(query=query)
-    print(output)
+    end = time.time()
+    print(end-start)

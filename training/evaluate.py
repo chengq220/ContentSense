@@ -48,7 +48,6 @@ def evaluate(path):
 
         end = time.time()
         timeTaken = end - start
-        print(timeTaken)
 
     return float(num_correct)/total_samples, float(f1)/len(testLoader), timeTaken, total_samples
 
