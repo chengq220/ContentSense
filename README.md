@@ -11,7 +11,7 @@ A lightweight Google Chrome extension to detect and prevent users from unintenti
 
 ### Setup backend web services
 1. Run ```docker-compose up --build``` to build the docker image
-2. The default access point is HTTP://localhost:8000/
+2. The default access point is http://localhost:8000/
 3. Check ```http://localhost:8000/docs#``` for all the available commands
 
 ## Screenshots
