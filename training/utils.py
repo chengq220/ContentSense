@@ -1,4 +1,5 @@
 import torch
+import torch.nn as tnn
 
 def load(path, model, optimizer):
     checkpoint = torch.load(path)
@@ -8,6 +9,12 @@ def load(path, model, optimizer):
         optimizer.load_state_dict(checkpoint['optimizer'])
     epoch = checkpoint['epoch']
     return epoch
+
+def initialize_weights(module):
+    if isinstance(module, tnn.Linear):
+        tnn.init.xavier_uniform_(module.weight)
+    elif isinstance(module, tnn.Conv2d):
+        tnn.init.kaiming_normal_(module.weight, mode='fan_in', nonlinearity='relu')
 
 def save(path, epoch, model, optimizer):
     checkpoint = { 

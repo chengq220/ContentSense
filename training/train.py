@@ -6,13 +6,14 @@ from dataset import get_dataloader
 import torch.optim as optim
 import wandb
 from tqdm import tqdm
-from utils import save
+from utils import save, initialize_weights
 from evaluate import evaluate
 from config import * 
 
 def train(beta = 0.5, T = 2):
     trainLoader, vocab_size = get_dataloader(batch=BATCH)
     student = CNN(vocab_size=vocab_size, n_classes=N_CLASSES).to(DEVICE)
+    student.apply(initialize_weights)
 
     if(WANDBON):
         wandb.init(
@@ -23,7 +24,9 @@ def train(beta = 0.5, T = 2):
                 "dataset": "Moderation-OpenAI",
                 "epochs": EPOCHS,
                 "optimzer": "Adams",
-                "Loss": "CE + Distillation Loss"
+                "Loss": "CE + Distillation Loss",
+                "initialization": "He + Xavier",
+                "kernel_size": "4 + stride 4"
             },
         )
     
@@ -60,11 +63,12 @@ def train(beta = 0.5, T = 2):
         save(path=f"{SAVE_DIR}/latest.pth", epoch = epoch, model = student, optimizer= optimizer)
         
         epoch_loss = running_loss / len(trainLoader)
-        accuracy = evaluate(path=f"{SAVE_DIR}/latest.pth")
+        acc, f1, _, _ = evaluate(path=f"{SAVE_DIR}/latest.pth")
 
         if(WANDBON):
             wandb.log({"Training Loss": epoch_loss})
-            wandb.log({"Test Accuracy": accuracy})
+            wandb.log({"Accuracy": acc})
+            wandb.log({"F1-score": f1})
 
 if __name__ == "__main__":
     train()

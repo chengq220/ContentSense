@@ -53,7 +53,7 @@ def evaluate(path):
 
 
 if __name__ == "__main__":
-    acc, f1, timeTaken, sampleSize = evaluate("training/weights/latest.pth")
+    acc, f1, timeTaken, sampleSize = evaluate("training/weights/traila_3x3kernel.pth")
     print("Accuracy: ", acc)
     print("F1: ", f1)
     print("Time taken: ", timeTaken)
