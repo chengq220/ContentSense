@@ -14,5 +14,9 @@ A lightweight Google Chrome extension to detect and prevent users from unintenti
 2. The default access point is http://localhost:8000/
 3. Check ```http://localhost:8000/docs#``` for all the available commands
 
+### Training Neural Network
+1. The training procedure is stored in ```/training```
+2. Change ```/training/config.py``` to the desired values and run ```python training.py```
+
 ## Screenshots
 

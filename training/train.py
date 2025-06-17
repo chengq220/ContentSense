@@ -34,7 +34,7 @@ def train(beta = 0.5, T = 2):
 
     for epoch in range(EPOCHS):
         running_loss = 0.0
-        for idx, (feature, label, teacher_logit) in enumerate(tqdm(trainLoader)):
+        for idx, (feature, label, teacher_logit, query) in enumerate(tqdm(trainLoader)):
             x = feature.to(DEVICE)
             y = label.to(DEVICE)
             teacher_logit = teacher_logit.to(DEVICE)

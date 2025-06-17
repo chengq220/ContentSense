@@ -9,7 +9,7 @@ Dataset object for custom datasets
 """
 class ContentDataset(Dataset):
     def __init__(self, isTrain = True):
-        data = pd.read_csv("dataset.csv")
+        data = pd.read_csv("training/dataset.csv")
         shuffle = data.sample(frac=1, random_state=42).reset_index(drop=True)
         full_logit = shuffle["logit"]
         shuffle = shuffle.drop(columns = ["logit"])
@@ -32,7 +32,7 @@ class ContentDataset(Dataset):
         tokenized_query = self.tokenizer(query, padding="max_length", truncation=True, return_tensors="pt")
         one_hot = torch.tensor([item.iloc[iidx] for iidx in range(1, len(item))])
         cur_logit = torch.tensor(ast.literal_eval(self.logit.iloc[idx])[0], dtype=float)
-        return tokenized_query["input_ids"].squeeze(0), one_hot, cur_logit
+        return tokenized_query["input_ids"].squeeze(0), one_hot, cur_logit, query
     
     @property
     def tokenizer_vocab_size(self):
@@ -43,11 +43,13 @@ def custom_collate(batch):
     ft = []
     lb = []
     logits = []
-    for idx, (feature, label, query) in enumerate(batch):
+    q = []
+    for idx, (feature, label, logit, query) in enumerate(batch):
         ft.append(feature)
         lb.append(label)
-        logits.append(query)
-    return torch.stack(ft), torch.stack(lb), torch.stack(logits)
+        logits.append(logit)
+        q.append(query)
+    return torch.stack(ft), torch.stack(lb), torch.stack(logits), q
     
 def get_dataloader(batch = 16, isTrain = True):
     dataset = ContentDataset(isTrain = isTrain)
